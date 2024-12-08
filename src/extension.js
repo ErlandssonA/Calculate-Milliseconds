@@ -3,6 +3,8 @@ const parseTimeToMilliseconds = require("./utils/parseTimeToMilliseconds");
 const formatMilliseconds = require("./utils/formatMilliseconds");
 
 function activate(context) {
+  console.log("Extension 'Calculate Milliseconds' is now running!");
+
   const decorationType = vscode.window.createTextEditorDecorationType({
     after: {
       color: "#709D68",
@@ -70,7 +72,7 @@ function activate(context) {
     if (!editor) return;
 
     const text = editor.document.getText();
-    const regex = /(\d+\s*\*\s*\d+\s*\*\s*\d+\s*\*\s*\d+(\s*\*\s*\d+){0,})/g;
+    const regex = /(\d+\s*\*\s*\d+(\s*\*\s*\d+)*)/g;
     const decorations = [];
 
     let match;

@@ -5,6 +5,21 @@
   "author": "Erlandsson",
   "publisher": "Erlandsson",
   "version": "1.0.0",
+  "license": "MIT",
+  "icon": "icon.png",
+  "pricing": "Free",
+  "qna": "false",
+  "galleryBanner": {
+    "color": "#161616",
+    "theme": "dark"
+  },
+  "keywords": [
+    "timestamps",
+    "milliseconds",
+    "time",
+    "calculate",
+    "convert"
+  ],
   "engines": {
     "vscode": "^1.95.0"
   },
@@ -16,7 +31,9 @@
     "Other"
   ],
   "main": "./src/extension.js",
-  "activationEvents": [],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
     "commands": [
       {
