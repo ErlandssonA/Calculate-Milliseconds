@@ -16,6 +16,7 @@
     "Other"
   ],
   "main": "./src/extension.js",
+  "activationEvents": [],
   "contributes": {
     "commands": [
       {
