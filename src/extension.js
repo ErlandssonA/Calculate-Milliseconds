@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const parseTimeToMilliseconds = require("./utils/parseTimeToMilliseconds");
 const formatMilliseconds = require("./utils/formatMilliseconds");
+const breakdownTime = require("./utils/breakdownTime");
 
 function activate(context) {
   console.log("Extension 'Calculate Milliseconds' is now running!");
@@ -13,6 +14,7 @@ function activate(context) {
     },
   });
 
+  // Register commands
   let convertToReadableCommand = vscode.commands.registerCommand("extension.convertToReadable", async () => {
     const input = await vscode.window.showInputBox({
       prompt: "Enter milliseconds to convert",
@@ -68,6 +70,53 @@ function activate(context) {
     }
   });
 
+  // Register hover provider
+  const hoverProvider = vscode.languages.registerHoverProvider("*", {
+    provideHover(document, position) {
+      const range = document.getWordRangeAtPosition(position, /\d+\s*\*\s*\d+(\s*\*\s*\d+)*/);
+      if (range) {
+        const expression = document.getText(range);
+        try {
+          const milliseconds = eval(expression);
+          const { days, hours, minutes, seconds } = breakdownTime(milliseconds);
+          const formattedMilliseconds = milliseconds.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+          let formatDay = "";
+          let formatHour = "";
+          let formatMinute = "";
+          let formatSecond = "";
+
+          if (days > 0) {
+            formatDay = `- ${days} day${days > 1 ? "s" : ""}\n` || "";
+          }
+          if (hours > 0) {
+            formatHour = `- ${hours} hour${hours > 1 ? "s" : ""}\n` || "";
+          }
+          if (minutes > 0) {
+            formatMinute = `- ${minutes} minute${minutes > 1 ? "s" : ""}\n` || "";
+          }
+          if (seconds > 0) {
+            formatSecond = `- ${seconds} second${seconds > 1 ? "s" : ""}\n` || "";
+          }
+
+          const hoverMessage =
+            `**Time Breakdown:**\n` +
+            formatDay +
+            formatHour +
+            formatMinute +
+            formatSecond +
+            `\n\n**Total:** ${formattedMilliseconds} ms`;
+
+          return new vscode.Hover(hoverMessage);
+        } catch (error) {
+          console.error("Error evaluating expression:", expression, error);
+        }
+      }
+    },
+  });
+
+  context.subscriptions.push(hoverProvider);
+
   function updateDecorations(editor, decorationType) {
     if (!editor) return;
 
@@ -81,7 +130,6 @@ function activate(context) {
         const milliseconds = eval(match[0]);
         const humanReadableTime = formatMilliseconds(milliseconds);
         const startPos = editor.document.positionAt(match.index);
-
         const line = editor.document.lineAt(startPos.line);
         const lineEnd = new vscode.Position(startPos.line, line.text.length);
 
