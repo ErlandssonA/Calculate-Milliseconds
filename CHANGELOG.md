@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.0] - 2025-01-24
+
+### Added
+
+- Added time breakdown in the hover tooltip
+
 ## [1.0.1] - 2024-12-08
 
 ### Added

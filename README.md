@@ -14,6 +14,10 @@ A simple VS Code extension to help developers work with timestamps by displaying
 - **Convert milliseconds to readable time**: Easily convert any milliseconds value into a human-readable format using a command.
 - **Convert readable time to milliseconds**: Convert human-readable time back to milliseconds with a simple command.
 
+### Time Breakdown in the Hover Tooltip
+
+- Displays the time breakdown in the hover tooltip alongside the ghost text, making it easier to understand the time value.
+
 ## Commands
 
 - `Convert Milliseconds to Readable Time`: Convert a selected milliseconds value to a readable time format.
