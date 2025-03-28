@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.1] - 2025-03-28
+
+### Added
+
+- Added images to the `README.md` file
+
 ## [1.1.0] - 2025-01-24
 
 ### Added
