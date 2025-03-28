@@ -9,6 +9,8 @@ A simple VS Code extension to help developers work with timestamps by displaying
 - Displays "ghost text" alongside the current timestamp in a human-readable format or the reverse (milliseconds) to help you visualize time while working with timestamps instead of having to write e.g. `1000 * 60 * 60 * 24 * 7`.
 - The ghost text updates in real-time, making it easier to compare and adjust times.
 
+![Ghost text in the editor](images/ghostText.png)
+
 ### Convert Between Milliseconds and Readable Time
 
 - **Convert milliseconds to readable time**: Easily convert any milliseconds value into a human-readable format using a command.
@@ -17,6 +19,8 @@ A simple VS Code extension to help developers work with timestamps by displaying
 ### Time Breakdown in the Hover Tooltip
 
 - Displays the time breakdown in the hover tooltip alongside the ghost text, making it easier to understand the time value.
+
+![Time breakdown in the hover tooltip](images/hoverTooltip.png)
 
 ## Commands
 
