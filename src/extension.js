@@ -43,7 +43,23 @@ function activate(context) {
     }
   });
 
-  context.subscriptions.push(convertToReadableCommand, convertToMillisecondsCommand);
+  let ignoreLineCommand = vscode.commands.registerCommand("extension.ignoreLine", async (lineNumber) => {
+    const editor = vscode.window.activeTextEditor;
+    if (lineNumber === undefined) {
+      vscode.window.showErrorMessage("You can only ignore a line by hovering over it.");
+      return;
+    }
+    if (editor) {
+      const line = editor.document.lineAt(lineNumber);
+      const text = line.text;
+      const newText = text + (text.trim().endsWith(";") ? "" : "") + " // @no-milliseconds";
+      await editor.edit((editBuilder) => {
+        editBuilder.replace(line.range, newText);
+      });
+    }
+  });
+
+  context.subscriptions.push(convertToReadableCommand, convertToMillisecondsCommand, ignoreLineCommand);
 
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
@@ -107,7 +123,14 @@ function activate(context) {
             formatSecond +
             `\n\n**Total:** ${formattedMilliseconds} ms`;
 
-          return new vscode.Hover(hoverMessage);
+          const commandUri = vscode.Uri.parse(
+            `command:extension.ignoreLine?${encodeURIComponent(JSON.stringify([position.line]))}`
+          );
+          const markdown = new vscode.MarkdownString(hoverMessage);
+          markdown.appendMarkdown(`\n\n[Ignore this line](${commandUri})`);
+          markdown.isTrusted = true;
+
+          return new vscode.Hover(markdown);
         } catch (error) {
           console.error("Error evaluating expression:", expression, error);
         }
@@ -120,6 +143,7 @@ function activate(context) {
   function updateDecorations(editor, decorationType) {
     if (!editor) return;
 
+    // Get configuration
     const text = editor.document.getText();
     const regex = /(\d+\s*\*\s*\d+(\s*\*\s*\d+)*)/g;
     const decorations = [];
@@ -127,10 +151,16 @@ function activate(context) {
     let match;
     while ((match = regex.exec(text))) {
       try {
-        const milliseconds = eval(match[0]);
-        const humanReadableTime = formatMilliseconds(milliseconds);
         const startPos = editor.document.positionAt(match.index);
         const line = editor.document.lineAt(startPos.line);
+
+        // Check if line has ignore comment
+        if (line.text.includes("@no-milliseconds")) {
+          continue;
+        }
+
+        const milliseconds = eval(match[0]);
+        const humanReadableTime = formatMilliseconds(milliseconds);
         const lineEnd = new vscode.Position(startPos.line, line.text.length);
 
         const range = new vscode.Range(lineEnd, lineEnd);

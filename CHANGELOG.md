@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.1.2] - 2025-04-26
+
+### Added
+
+- Added option to disable ghost text for a line by adding `// @no-milliseconds` to it.
+- Added `Ignore this line` to hover message.
+
 ## [1.1.1] - 2025-03-28
 
 ### Added
